@@ -77,7 +77,27 @@ export const dummyEmployeeStats: IEmployeeStats[] = [
     },
 ]
 
-export interface WorkStat {
+export class WorkStat implements IWorkStat {
+    id: number;
+    name: string;
+    social_condition: number;
+    develop_condition: number;
+    next_work?: number | undefined;
+    next_gold?: number | undefined;
+    turn_gold?: number | undefined;
+
+    constructor(args: IWorkStat) {
+        this.id = args.id;
+        this.name = args.name;
+        this.social_condition = args.social_condition;
+        this.develop_condition = args.develop_condition;
+        this.next_work = args.next_work;
+        this.next_gold = args.next_gold;
+        this.turn_gold = args.turn_gold;
+    }
+}
+
+export interface IWorkStat {
     id: number;
     name: string;
     social_condition: number;
@@ -87,7 +107,7 @@ export interface WorkStat {
     turn_gold?: number;
 }
 
-export const dummyWorkStats: WorkStat[] = [
+export const dummyWorkStats: IWorkStat[] = [
     {
         id: 1,
         name: "웹사이트 게시판 계약 따기",

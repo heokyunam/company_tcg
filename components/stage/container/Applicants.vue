@@ -9,3 +9,8 @@
 <script lang="ts" setup>
     import { dummyEmployeeStats } from '~~/composables/dummy';
 </script>
+<style lang="scss">
+    .applicants {
+        display: flex;
+    }
+</style>

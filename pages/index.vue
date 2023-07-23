@@ -1,5 +1,5 @@
 <template>
-    <StageContainerApplicants />
+    <StageContainerStage />
 </template>
 <script lang="ts" setup>
 
