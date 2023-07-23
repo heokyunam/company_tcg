@@ -1,6 +1,7 @@
 <template>
     <StageContainerWorkTodos />
     <StageContainerApplicants />
+    <StagePlayer />
 </template>
 <script lang='ts' setup>
     

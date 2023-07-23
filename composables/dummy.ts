@@ -1,5 +1,5 @@
 
-export class EmployeeStats implements IEmployeeStats {
+export class EmployeeStats implements IApplicantStats {
     id: number;
     name: string;
     image_url: string;
@@ -7,7 +7,7 @@ export class EmployeeStats implements IEmployeeStats {
     develop_energy: number;
     salary: number;
 
-    constructor(args: IEmployeeStats) {
+    constructor(args: IApplicantStats) {
         this.id = args.id;
         this.name = args.name;
         this.image_url = args.image_url;
@@ -17,7 +17,7 @@ export class EmployeeStats implements IEmployeeStats {
     }
 }
 
-export interface IEmployeeStats {
+export interface IApplicantStats {
     id: number;
     name: string;
     image_url: string;
@@ -26,7 +26,7 @@ export interface IEmployeeStats {
     salary: number;
 }
 
-export const dummyEmployeeStats: IEmployeeStats[] = [
+export const dummyApplicantStats: IApplicantStats[] = [
     {
         id: 1,
         name: "James",
