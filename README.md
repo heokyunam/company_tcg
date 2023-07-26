@@ -38,7 +38,68 @@ IT 회사 운영을 기반으로 하는 Turn Card Game입니다.
     * 완료된 WORK는 다른 WORK를 주거나 골드를 준다.
     * 다른 WORK는 턴 시작시 나타난다.
     * 채용된 Applicant(Employee)는 다시 핸드로 이동한다.
-    * WORK에서 성장 스탯이 잇을 경우 Applicant(Employee)의 능력과 골드값이 올라간다.
+    * WORK에서 성장 스탯이 있을 경우 Applicant(Employee)의 능력과 골드값이 올라간다.
 * 편의성 기능
     * 초기화 버튼: 해당 턴에 복잡하게 할당했던 작업을 초기화한다.
     * 할당 후 WORK 카드 hover시 아래로 쭉 인물이 그려진다.
+
+
+## DEVELOP DESIGN
+* LOGIC
+    * gold 10, work 제공, applicant 제공
+    * 턴 플레이
+        * applicant to work 할당(gold 반영)
+        * applicant 할당 빼기(gold 반영)
+        * 턴 초기화
+        * work에 할당 된 applicant 보기
+    * 턴 종료
+        * 해결한 work 보상
+            * 새 work or gold
+        * applicant 재배치
+            * applicant 성장
+* DESIGN PATTERN
+    * 턴 플레이
+        * 커맨드
+        * UI Observer
+    * 턴 종료
+        * 커맨드
+        * UI Observer
+* CLASS
+    * Stat
+        * ApplicantStat
+        * WorkStat
+        * StageInfo
+    * Command
+        * AssignWork: 골드가 충분한지 확인
+        * UnassignWork
+        * RevertTurn
+        * EndTurn
+    * Manager(pinia)
+        * CommandManager: 턴당 커맨드 insert & revert(턴 플레이)
+        * PlayerManager: work list, applicant list, gold, heart
+        * TurnManager: 턴 종료 관련 처리
+    * AnimationExecutor
+        * WorkAnimation: work 할당/해제, turn revert, 할당된 applicant hover view
+        * TurnEndAnimation: 턴 종료 후 일어나는 일들에 대한 애니메이션
+            * rewardWork, growApplicant, heart 감소
+    * UIEntity
+        * Applicant
+        * Work
+    * Entity
+        * Applicant: 스탯, 성장 수치
+        * Work: 스탯, 실패/성공/대기 상태
+* SEQUENCE
+    * 카드할당
+        * Applicant 클릭 => Work 클릭 => 할당 가능 여부 확인 => Applicant 할당 => 할당 애니메이션 => WORK 조건 충족시 특수 효과
+    * 할당해제
+        * Applicant 클릭 => 핸드에 + 아이콘 추가 => + 클릭시 역순으로 빠지는 지 확인 후 할당 해제 => 할당 해제 애니메이션
+    * 턴 revert
+        * CommandManager 역순으로 Revert Animation 실행
+    * 턴 종료 - WORK 충족 실패
+        * WORK 실패 애니메이션 => 하트 감소하는 애니메이션 => 하트 감소
+    * 턴 종료 - WORK 연계
+        * 새로운 WORK 등장 => 기존 WORK 성공 애니메이션 => work list 조정
+    * 턴 종료 - gold 수급
+        * WORK 성공 애니메이션 => work list 조정 => gold 수급 => gold UI 반영
+    * 턴 종료 - Applicant 성장
+        * Applicant 가운데 등장 => Applicant 스탯이 변화(다른 색상) => applicants로 이동
