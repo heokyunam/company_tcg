@@ -26,7 +26,7 @@ export interface IApplicantStats {
     salary: number;
 }
 
-export const dummyApplicantStats: IApplicantStats[] = [
+export const dummyEmployeeStats: IApplicantStats[] = [
     {
         id: 1,
         name: "James",
