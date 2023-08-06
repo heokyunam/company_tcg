@@ -5,13 +5,30 @@ export enum DragStatus {
     IDLE_FOR_APPLICANT, WAIT_FOR_WORK
 }
 
-export class ApplicantCard {
-    stat: IApplicantStats; // interface라서 warning이 뜬다
+export class ApplicantCard implements IApplicantStats {
     selected: boolean;
+    empty: boolean;
+    id: number;
+    name: string;
+    image_url: string;
+    social_enery: number;
+    develop_energy: number;
+    salary: number;
 
     constructor(stat: IApplicantStats) {
-        this.stat = stat;
         this.selected = false;
+        this.empty = false;
+        this.id = stat.id;
+        this.name = stat.name;
+        this.image_url = stat.image_url;
+        this.social_enery = stat.social_enery;
+        this.develop_energy = stat.develop_energy;
+        this.salary = stat.salary;
+
+    }
+
+    pop() {
+        this.empty = true;
     }
 }
 
@@ -22,6 +39,10 @@ export class WorkCard {
     constructor(stat: IWorkStat) {
         this.stat = stat;
         this.assignedEmployees = [];
+    }
+
+    assign(applicant: ApplicantCard) {
+        this.assignedEmployees.push(applicant);
     }
 }
 
@@ -68,11 +89,39 @@ export const useDrag = defineStore('drag', () => {
                 selected: false
             };
         })
+
+        drag.status = DragStatus.WAIT_FOR_WORK;
+    }
+
+    const assignWork = (workParam: WorkCard) => {
+        drag.applicantCards = drag.applicantCards.map(card => {
+            if(card.selected) {
+                drag.workCards = drag.workCards.map(work => {
+                    if(work === workParam) {
+                        work.assign(card); // card === selectedCard
+                    }
+    
+                    return work;
+                })
+
+                return {
+                    ...card,
+                    empty: true,
+                    selected: false,
+                }
+            } else {
+                return {
+                    ...card,
+                    selected: false,
+                }
+            }
+        })
     }
 
     return {
         drag,
         onInit,
         activateEmployee,
+        assignWork
     }
 });

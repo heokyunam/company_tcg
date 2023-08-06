@@ -1,7 +1,7 @@
 <template>
     <div class="applicants">
         <StageEmployee v-for="card in drag.applicantCards"
-        :key="card.stat.name"
+        :key="card.name"
         :card="card"
         />
     </div>

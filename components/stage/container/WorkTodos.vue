@@ -16,5 +16,6 @@
 <style lang='scss'>
     .work-todos {
         display: flex;
+        align-items: flex-end;
     }
 </style>
