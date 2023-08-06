@@ -8,7 +8,13 @@
     </div>
 </template>
 <script lang='ts' setup>
-    
+    import { useDrag } from "~~/pinia/stage/drag";
+
+    const { onInit } = useDrag();
+
+    onMounted(() => {
+        onInit();
+    })
 </script>
 <style lang='scss'>
     .stage {

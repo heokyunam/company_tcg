@@ -1,13 +1,17 @@
 <template>
     <div class="applicants">
-        <StageEmployee v-for="stat in dummyEmployeeStats"
-        :key="stat.name"
-        :stat="new EmployeeStats(stat)"
+        <StageEmployee v-for="card in drag.applicantCards"
+        :key="card.stat.name"
+        :card="card"
         />
     </div>
 </template>
 <script lang="ts" setup>
-    import { dummyEmployeeStats } from '~~/composables/dummy';
+    import { DragReactive, useDrag } from '~~/pinia/stage/drag';
+
+    const { drag } = useDrag() as {drag: DragReactive};
+
+    
 </script>
 <style lang="scss">
     .applicants {

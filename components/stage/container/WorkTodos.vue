@@ -1,13 +1,15 @@
 <template>
     <div class="work-todos">
-        <StageWorkTodoCard v-for="stat in dummyWorkStats"
-        :key="stat.name"
-        :stat="new WorkStat(stat)"
+        <StageWorkTodoCard v-for="card in drag.workCards"
+        :key="card.stat.name"
+        :card="card"
         />
     </div>
 </template>
 <script lang='ts' setup>
-import { WorkStat } from '~~/composables/dummy';
+    import { useDrag } from '~~/pinia/stage/drag';
+
+    const { drag } = useDrag();
 
     
 </script>
