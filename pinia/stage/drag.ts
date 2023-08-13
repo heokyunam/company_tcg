@@ -1,5 +1,6 @@
 import { IApplicantStats, IWorkStat, dummyEmployeeStats } from "~~/composables/dummy";
 import { defineStore } from "pinia";
+import { buildUpdatedWorkStat } from "~~/composables/stage/work";
 
 export enum DragStatus {
     IDLE_FOR_APPLICANT, WAIT_FOR_WORK
@@ -32,17 +33,55 @@ export class ApplicantCard implements IApplicantStats {
     }
 }
 
+declare type StatStatus = "idle" | "proceeding" | "solved";
+
 export class WorkCard {
+    social_point: number;
+    develop_point: number;
+    social_status: StatStatus;
+    develop_status: StatStatus;
     stat: IWorkStat;
+
     assignedEmployees: ApplicantCard[];
 
     constructor(stat: IWorkStat) {
         this.stat = stat;
+        this.social_point = stat.social_condition;
+        this.develop_point = stat.develop_condition;
         this.assignedEmployees = [];
+        this.social_status = "idle";
+        this.develop_status = "idle";
     }
 
     assign(applicant: ApplicantCard) {
         this.assignedEmployees.push(applicant);
+
+        this.update();
+    }
+
+    update() {
+        const develop_sum = this.assignedEmployees
+            .map(employee => employee.develop_energy)
+            .reduce((a, b) => a + b);
+        const social_sum = this.assignedEmployees
+            .map(employee => employee.social_enery)
+            .reduce((a, b) => a + b);
+
+        this.social_point = Math.max(this.stat.social_condition - social_sum, 0);
+        this.develop_point = Math.max(this.stat.develop_condition - develop_sum, 0);
+
+        this.social_status = getStatStatus(this.social_point, this.stat.social_condition);
+        this.develop_status = getStatStatus(this.develop_point, this.stat.develop_condition);
+    }
+}
+
+const getStatStatus = (point: number, condition: number): StatStatus => {
+    if(point === 0) {
+        return "solved";
+    } else if(point < condition) {
+        return "proceeding";
+    } else {
+        return "idle";
     }
 }
 
@@ -96,6 +135,7 @@ export const useDrag = defineStore('drag', () => {
     const assignWork = (workParam: WorkCard) => {
         drag.applicantCards = drag.applicantCards.map(card => {
             if(card.selected) {
+                
                 drag.workCards = drag.workCards.map(work => {
                     if(work === workParam) {
                         work.assign(card); // card === selectedCard

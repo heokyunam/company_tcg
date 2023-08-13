@@ -7,8 +7,8 @@
             :class="{selected: card.selected}">
             <div class="name">{{ card.name }}</div>
             <div class="stat">
-                <div class="social">{{ card.social_enery }}</div>
-                <div class="develop">{{ card.develop_energy }}</div>
+                <div class="social">S{{ card.social_enery }}</div>
+                <div class="develop">D{{ card.develop_energy }}</div>
             </div>
         </div>
         <div class="empty" v-else>

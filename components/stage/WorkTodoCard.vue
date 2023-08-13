@@ -1,31 +1,21 @@
 <template>
-    <div class="work-container card-container">
-        <div class="work-todo card" v-if="card && card.stat" @click="onClick(card)">
+    <div class="work-container card-container" v-if="card">
+        <div class="work-todo card" v-if="card.stat" @click="onClick(card)">
             <div class="name">{{ card.stat.name }}</div>
             <div class="stat">
-                <div class="social">{{ card.stat.social_condition }}</div>
-                <div class="develop">{{ card.stat.develop_condition }}</div>
+                <div class="social" :class="card.social_status">
+                    S{{ card.social_point }}
+                </div>
+                <div class="develop" :class="card.develop_status">
+                    D{{ card.develop_point }}
+                </div>
             </div>
         </div>
-        <!-- <div class="employee card" v-if="card?.stat.social_condition == 0">
-            <div class="name">테스트</div>
-            <div class="stat">
-                <div class="social">테</div>
-                <div class="develop">스트</div>
-            </div>
-        </div>
-        <div class="employee card">
-            <div class="name">테스트</div>
-            <div class="stat">
-                <div class="social">테</div>
-                <div class="develop">스트</div>
-            </div>
-        </div> -->
         <div class="employee card" v-for="employee in card.assignedEmployees" :key="employee.name">
             <div class="name">{{ employee.name }}</div>
             <div class="stat">
-                <div class="social">{{ employee.social_enery }}</div>
-                <div class="develop">{{ employee.develop_energy }}</div>
+                <div class="social">S{{ employee.social_enery }}</div>
+                <div class="develop">D{{ employee.develop_energy }}</div>
             </div>
         </div>
     </div>
@@ -58,6 +48,32 @@
             height: 100px;
             .name {
                 font-size: 0.7em;
+            }
+
+            .stat {
+                font-weight: 700;
+
+                div {
+                    padding: 5px;
+                }
+
+                .idle {
+                    color: grey;
+                }
+                .proceeding {
+                    color: grey;
+                }
+                .solved {
+                    color: white;
+                }
+
+                .social {
+                    background-color: #F9D857;
+                }
+
+                .develop {
+                    background-color: #274374;
+                }
             }
         }
     }
