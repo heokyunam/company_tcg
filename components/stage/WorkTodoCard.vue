@@ -1,6 +1,8 @@
 <template>
     <div class="work-container card-container" v-if="card">
-        <div class="work-todo card" v-if="card.stat" @click="onClick(card)">
+        <div class="work-todo card" v-if="card.stat" @click="onClick(card)"
+            :class="card.css_class"
+            >
             <div class="name">{{ card.stat.name }}</div>
             <div class="stat">
                 <div class="social" :class="card.social_status">
@@ -46,6 +48,13 @@
 
         .work-todo {
             height: 100px;
+
+            &.solved {
+                transition-property: all;
+                transition-duration: 10s;
+                transform: translate(0px, -300px);
+            }
+
             .name {
                 font-size: 0.7em;
             }

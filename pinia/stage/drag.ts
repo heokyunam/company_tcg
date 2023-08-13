@@ -1,6 +1,5 @@
 import { IApplicantStats, IWorkStat, dummyEmployeeStats } from "~~/composables/dummy";
 import { defineStore } from "pinia";
-import { buildUpdatedWorkStat } from "~~/composables/stage/work";
 
 export enum DragStatus {
     IDLE_FOR_APPLICANT, WAIT_FOR_WORK
@@ -41,6 +40,7 @@ export class WorkCard {
     social_status: StatStatus;
     develop_status: StatStatus;
     stat: IWorkStat;
+    css_class: string;
 
     assignedEmployees: ApplicantCard[];
 
@@ -51,12 +51,22 @@ export class WorkCard {
         this.assignedEmployees = [];
         this.social_status = "idle";
         this.develop_status = "idle";
+
+        this.css_class = "";
     }
 
     assign(applicant: ApplicantCard) {
-        this.assignedEmployees.push(applicant);
+        if(this.assignedEmployees.length < 2) {
+            this.assignedEmployees.push(applicant);
+    
+            this.update();
 
-        this.update();
+            return true;
+        } else {
+            alert("하나의 일에 2명 이상이 할당 될 수 없습니다!");
+
+            return false;
+        }
     }
 
     update() {
@@ -72,6 +82,10 @@ export class WorkCard {
 
         this.social_status = getStatStatus(this.social_point, this.stat.social_condition);
         this.develop_status = getStatStatus(this.develop_point, this.stat.develop_condition);
+    }
+
+    moveToSolvedArea() {
+        this.css_class = " solved ";
     }
 }
 
@@ -135,19 +149,27 @@ export const useDrag = defineStore('drag', () => {
     const assignWork = (workParam: WorkCard) => {
         drag.applicantCards = drag.applicantCards.map(card => {
             if(card.selected) {
-                
+                let assignCount = 0;
                 drag.workCards = drag.workCards.map(work => {
                     if(work === workParam) {
-                        work.assign(card); // card === selectedCard
+                        const isAssigned = work.assign(card); // card === selectedCard
+                        if(isAssigned) assignCount++;
                     }
     
                     return work;
                 })
 
-                return {
-                    ...card,
-                    empty: true,
-                    selected: false,
+                if(assignCount > 0) {
+                    return {
+                        ...card,
+                        empty: true,
+                        selected: false,
+                    }
+                } else {
+                    return {
+                        ...card,
+                        selected: false,
+                    }
                 }
             } else {
                 return {
@@ -158,10 +180,26 @@ export const useDrag = defineStore('drag', () => {
         })
     }
 
+    const endTurn = () => {
+        // 작업 완료 칸으로 work 이동
+        // gold 칸 위로 + 애니메이션
+        // 끝내지 못한 일은 남은 값 만큼 다시 worklist로 들어간다.
+        // 남은 일 값만큼 hp가 감소하는 - 애니메이션
+        // 할당되어있는 모든 직원을 지원자 리스트로 이동시킨다.
+        // 스탯 칸 위로 + 애니메이션
+
+        drag.workCards = drag.workCards.map(workCard => {
+            workCard.moveToSolvedArea();
+
+            return workCard;
+        })
+    }
+
     return {
         drag,
         onInit,
         activateEmployee,
-        assignWork
+        assignWork,
+        endTurn,
     }
 });
